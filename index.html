@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Store - Rock Style</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="sidebar" class="sidebar">
+            <div class="logo">
+                <h2>ROCK<span>MOVIES</span></h2>
+            </div>
+            <nav>
+                <button class="nav-item active" data-page="home">
+                    <i class="fas fa-home"></i> <span>Home</span>
+                </button>
+                <button class="nav-item" data-page="meus-filmes">
+                    <i class="fas fa-film"></i> <span>Meus Filmes</span>
+                </button>
+                <button class="nav-item" data-page="carrinho">
+                    <i class="fas fa-shopping-cart"></i> <span>Carrinho</span>
+                </button>
+                <button class="nav-item" data-page="historico">
+                    <i class="fas fa-history"></i> <span>Histórico</span>
+                </button>
+                <hr>
+                <button class="nav-item" data-page="perfil">
+                    <i class="fas fa-user"></i> <span>Minha Conta</span>
+                </button>
+            </nav>
+        </aside>
+
+        <div class="main-wrapper">
+            <nav class="search-nav">
+                <header class="top-bar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-input" placeholder="Pesquisar filmes...">
+                    </div>
+                    <div class="user-status">
+                        <i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span>
+                    </div>
+                </header>
+                <div class="categories-bar">
+                    <button class="btn-category active" data-genre="all">Todos</button>
+                    <button class="btn-category" data-genre="28">Ação</button>
+                    <button class="btn-category" data-genre="35">Comédia</button>
+                    <button class="btn-category" data-genre="18">Drama</button>
+                </div>
+            </nav>
+
+            <main id="main-content">
+                <div class="loader">Carregando filmes...</div>
+            </main>
+        </div>
+    </div>
+
+    <button id="menu-toggle" class="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <script type="module" src="src/main.js"></script>
+</body>
+</html>
