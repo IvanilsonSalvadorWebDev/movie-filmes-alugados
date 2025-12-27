@@ -278,6 +278,18 @@ font-weight: var(--fw-bold);
     box-shadow: 0 4px 12px rgba(255, 56, 56, 0.2);
 }
 
+#btn-logout {
+    border-top: 1px solid #333;
+    margin-top: 20px !important;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+#btn-logout:hover {
+    background: rgba(255, 68, 68, 0.1) !important;
+    color: #ff6666 !important;
+}
+
 /* Estilo de Formulários */
 .form-group { margin-bottom: 20px; }
 .form-group label { display: block; margin-bottom: 8px; font-weight: var(--fw-bold); font-size: 0.9rem; color: var(--text-rock); }
@@ -584,6 +596,68 @@ main { padding: 40px; }
 #admin-messages-list .message-item:last-child {
     border-bottom: none;
 }
+
+/* Estilo do Popup de Confirmação */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85); /* Fundo escuro */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(5px); /* Efeito de desfoque atrás */
+}
+
+.custom-modal {
+    background: #1a1a1a;
+    border: 1px solid #ff8c00;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 400px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.modal-icon {
+    font-size: 3rem;
+    color: #ff8c00;
+    margin-bottom: 15px;
+}
+
+.modal-buttons {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-confirm {
+    background: #ff8c00;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-cancel {
+    background: #333;
+    color: #ccc;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-confirm:hover { background: #e67e00; }
+.btn-cancel:hover { background: #444; }
+
 
 @keyframes slideIn {
     from { transform: translateX(100%); opacity: 0; }
