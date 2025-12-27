@@ -20,8 +20,8 @@ export function createMovieCard(movie) {
             </div>
             <div class="movie-actions">
                 <button class="btn-detail" data-id="${movie.id}">Ver Mais</button>
-                <button class="btn-primary btn-add-cart" data-id="${movie.id}">
-                    <i class="fas fa-cart-plus"></i> Add
+                <button class="btn-orange btn-add-cart" data-id="${movie.id}">
+                    <i class="fas fa-cart-plus"></i>
                 </button>
             </div>
         </div>
