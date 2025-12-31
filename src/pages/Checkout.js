@@ -1,84 +1,101 @@
-import { getCart, updateCartCount } from '../utils/storage.js';
+import { getCart, updateCartCount, removeFromCart } from '../utils/storage.js';
 import { navigate } from '../main.js';
 import { showToast } from '../utils/toast.js';
+import { IMG_URL } from '../utils/api.js';
 
 export function renderCheckout() {
     const cartItems = getCart();
     const total = cartItems.reduce((acc, item) => acc + item.price, 0);
     const container = document.createElement('div');
-    container.className = 'checkout-page';
+    container.className = 'checkout-page-wrapper';
+
+    // Lógica para gerar o leque (fan-out) idêntico à imagem
+    const movieStackHTML = cartItems.map((item, index) => {
+        const posterSrc = item.poster_path || item.poster; 
+        const fullURL = `${IMG_URL}${posterSrc}`;
+        
+        const totalItems = cartItems.length;
+        const middleIndex = (totalItems - 1) / 2;
+        
+        // Cálculos de transformação para o arco perfeito
+        const rotation = totalItems > 1 ? (index - middleIndex) * 15 : 0;
+        const translateY = Math.abs(index - middleIndex) * 15;
+        const translateX = (index - middleIndex) * 10;
+
+        return `
+            <div class="stack-card" 
+                 style="--rotation: ${rotation}deg; --translateY: ${translateY}px; --translateX: ${translateX}px; z-index: ${index};">
+                <img src="${fullURL}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/150x225?text=Filme'">
+                <button class="remove-stack-item" data-id="${item.id}">×</button>
+            </div>
+        `;
+    }).join('');
 
     container.innerHTML = `
-        <h1>Finalizar Pagamento</h1>
-        <div class="checkout-grid" style="display: grid; grid-template-columns: 1fr 350px; gap: 30px; margin-top: 20px;">
+        <style>
             
-            <div class="payment-form profile-card">
-                <h3>Dados de Pagamento</h3>
-                <form id="pay-form" style="margin-top: 20px;">
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label>Número do Cartão</label>
-                        <input type="text" placeholder="0000 0000 0000 0000" class="form-control" required style="width: 100%; padding: 10px; margin-top: 5px;">
-                    </div>
-                    <div style="display: flex; gap: 10px;">
-                        <div style="flex: 1;">
-                            <label>Validade</label>
-                            <input type="text" placeholder="MM/AA" style="width: 100%; padding: 10px;">
+        </style>
+
+        <div class="checkout-grid">
+            <div class="payment-section">
+                <div class="payment-card-glass">
+                    <h3>Payment Details</h3>
+                    <form id="pay-form">
+                        <div class="form-group">
+                            <label>Cardholder Name</label>
+                            <input type="text" placeholder="John Doe" required>
                         </div>
-                        <div style="flex: 1;">
-                            <label>CVV</label>
-                            <input type="text" placeholder="123" style="width: 100%; padding: 10px;">
+                        <div class="form-group">
+                            <label>Card Number</label>
+                            <input type="text" placeholder="0000 0000 0000 0000" required>
                         </div>
-                    </div>
-                    <button type="submit" class="btn-primary" style="width: 100%; margin-top: 25px; padding: 15px;">
-                        Pagar ${total.toFixed(2)}€
-                    </button>
-                </form>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Expiry Date</label>
+                                <input type="text" placeholder="MM/AA" required>
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" placeholder="123" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-card-pay">Card Mard</button>
+                    </form>
+                </div>
             </div>
 
-            <div class="checkout-summary profile-card">
-                <h3>Resumo</h3>
-                <p style="margin: 15px 0;">Total de filmes: <strong>${cartItems.length}</strong></p>
-                <h2 style="color: var(--primary-orange)">${total.toFixed(2)}€</h2>
+            <div class="summary-section">
+                <h2 class="summary-title" style="margin-bottom: 60px; font-weight: 400; opacity: 0.8;">Summary</h2>
+                <div class="movie-fan-display">
+                    ${movieStackHTML || '<p>Seu carrinho está vazio</p>'}
+                </div>
+                <div class="summary-footer" style="text-align: center;">
+                    <p style="color: #888;">Total de filmes: ${cartItems.length}</p>
+                    <h1 class="grand-total">${total.toFixed(2).replace('.', ',')}€</h1>
+                </div>
             </div>
         </div>
     `;
 
-    // Lógica de Processamento da Compra
-    container.querySelector('#pay-form').addEventListener('submit', (e) => {
+    // Ativação dos botões de remover
+    container.querySelectorAll('.remove-stack-item').forEach(btn => {
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            const id = btn.getAttribute('data-id');
+            removeFromCart(id); 
+            updateCartCount();
+            navigate('checkout'); 
+        };
+    });
+
+    // Submissão do formulário
+    container.querySelector('#pay-form').onsubmit = (e) => {
         e.preventDefault();
-
-        // 1. Pegar o que está no carrinho e o que já está na biblioteca
-        const cart = getCart();
-        const library = JSON.parse(localStorage.getItem('rockmovies_rentals') || '[]');
-        const history = JSON.parse(localStorage.getItem('rockmovies_history') || '[]');
-
-        // 2. Mover itens do carrinho para a biblioteca e histórico
-        const purchasedItems = cart.map(item => ({
-            ...item,
-            purchaseDate: Date.now(),
-            // Se for aluguer, adiciona 48h de validade
-            expiryDate: item.type === 'rent' ? Date.now() + (48 * 60 * 60 * 1000) : null
-        }));
-
-        const newLibrary = [...library, ...purchasedItems];
-        const newHistory = [...history, ...purchasedItems];
-
-        // 3. Salvar nos Storages
-        localStorage.setItem('rockmovies_rentals', JSON.stringify(newLibrary));
-        localStorage.setItem('rockmovies_history', JSON.stringify(newHistory));
-
-        // 4. Limpar Carrinho
+        showToast('Pagamento processado com sucesso!');
         localStorage.removeItem('rockmovies_cart');
         updateCartCount();
-
-        // 5. Feedback Visual com Toast
-        showToast('Pagamento aprovado! Os filmes já estão na sua biblioteca.', 'success');
-
-        // 6. Redirecionar após um pequeno delay para o user ler a mensagem
-        setTimeout(() => {
-            navigate('meus-filmes');
-        }, 1500);
-    });
+        navigate('meus-filmes');
+    };
 
     return container;
 }

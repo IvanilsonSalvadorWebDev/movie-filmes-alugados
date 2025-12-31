@@ -18,7 +18,7 @@ export async function renderMovieDetails(movieId) {
         : '';
 
     container.innerHTML = `
-        <button id="btn-back" class="btn-back">
+        <button id="btn-back" class="btn-back btn-primary">
             <i class="fas fa-arrow-left"></i> Voltar
         </button>
         
