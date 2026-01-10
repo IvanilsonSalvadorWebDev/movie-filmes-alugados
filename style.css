@@ -763,3 +763,192 @@ main:has(.checkout-page-wrapper) {
  .top-bar, .categories-bar { padding: 15px 20px; }
  .search-box { max-width: 250px; }
 }
+
+/* ==========================================================================
+   HERO COMPONENT - ROCKMOVIES STYLE
+   ========================================================================== */
+.hero-section {
+    position: relative;
+    height: 550px;
+    margin: 0 40px 40px 40px; /* Margem para alinhar com o padding do main */
+    border-radius: calc(var(--radius) * 2);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    background-color: var(--text-rock);
+    box-shadow: var(--shadow);
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center 20%;
+    z-index: 1;
+    transition: transform 0.8s ease;
+}
+
+.hero-section:hover .hero-background {
+    transform: scale(1.03);
+}
+
+/* Overlay gradiente seguindo a paleta do projeto */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        rgba(52, 53, 55, 0.95) 0%, 
+        rgba(52, 53, 55, 0.6) 50%, 
+        transparent 100%);
+    z-index: 2;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 3;
+    padding: 0 60px;
+    max-width: 650px;
+    color: white;
+}
+
+.hero-badge {
+    background-color: var(--primary-orange);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: var(--fw-black);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-block;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(255, 150, 57, 0.3);
+}
+
+.hero-title {
+    font-family: 'Gilroy', sans-serif;
+    font-size: 3.5rem;
+    font-weight: var(--fw-black);
+    line-height: 1.1;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.hero-description {
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 35px;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+/* Botão principal do Hero */
+.hero-btn-main {
+    padding: 15px 35px;
+    font-size: 1rem;
+    border-radius: 30px;
+    background-color: var(--primary-orange);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: var(--fw-bold);
+    transition: var(--transition);
+}
+
+.hero-btn-main:hover {
+    background-color: var(--orange-hover);
+    transform: scale(1.05);
+}
+
+/* Botão de Carrinho/Opções */
+.hero-cart-wrapper {
+    position: relative;
+}
+
+.hero-btn-cart {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: var(--fw-bold);
+    transition: var(--transition);
+}
+
+.hero-btn-cart:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Dropdown do Hero adaptado ao estilo do sistema */
+.hero-dropdown {
+    position: absolute;
+    bottom: calc(100% + 15px);
+    left: 0;
+    background: white;
+    min-width: 200px;
+    border-radius: var(--radius);
+    padding: 10px;
+    box-shadow: var(--shadow);
+    display: none;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.hero-dropdown.active {
+    display: flex;
+    animation: fadeInUp 0.3s ease;
+}
+
+.hero-dropdown button {
+    background: none;
+    border: none;
+    padding: 12px 15px;
+    text-align: left;
+    color: var(--text-rock);
+    font-weight: var(--fw-bold);
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.hero-dropdown button:hover {
+    background-color: var(--bg-light);
+    color: var(--primary-orange);
+}
+
+.hero-dropdown button span {
+    opacity: 0.6;
+    font-weight: var(--fw-regular);
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsividade Básica */
+@media (max-width: 768px) {
+    .hero-section { height: 400px; margin: 0 15px 25px 15px; }
+    .hero-title { font-size: 2.2rem; }
+    .hero-description { font-size: 0.95rem; }
+    .hero-content { padding: 0 30px; }
+}
