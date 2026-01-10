@@ -10,8 +10,8 @@ export function createHero(movie) {
 
     // Usamos o backdrop_path para uma imagem horizontal e larga
     const backdrop = movie.backdrop_path 
-        ? `image.tmdb.org{movie.backdrop_path}` 
-        : 'via.placeholder.com';
+    ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}` 
+    : 'https://via.placeholder.com/1920x1080?text=Sem+Imagem';
 
     hero.innerHTML = `
         <div class="hero-overlay"></div>
