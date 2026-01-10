@@ -8,8 +8,6 @@ import { renderMyMovies } from './pages/MyMovies.js';
 import { renderHistory } from './pages/History.js';
 import { renderProfile } from './pages/Profile.js';
 import { renderLogin } from './pages/Login.js';
-// Importe aqui a sua futura página de Admin se já a tiver:
-// import { renderAdminDashboard } from './pages/AdminDashboard.js';
 
 let currentPage = 'home'; 
 
@@ -18,27 +16,21 @@ let currentPage = 'home';
  */
 function updateSidebarUI(page, user) {
     const isAdmin = user && user.role === 'admin';
-    const navContainer = document.querySelector('.nav-items');
     const cartIcon = document.querySelector('.cart-icon');
 
-    // 1. Esconder/Mostrar ícone do Carrinho
     if (cartIcon) {
         cartIcon.style.display = isAdmin ? 'none' : 'block';
     }
 
-    // 2. Re-renderizar itens do menu se o papel mudar (opcional, dependendo da sua estrutura HTML)
-    // Se o seu HTML for fixo, apenas escondemos itens específicos via CSS ou JS:
     document.querySelectorAll('.nav-item').forEach(item => {
         const itemPage = item.getAttribute('data-page');
         
-        // Esconder "Meus Filmes" e "Carrinho" para Admin
         if (isAdmin && ['meus-filmes', 'carrinho', 'historico'].includes(itemPage)) {
             item.style.display = 'none';
         } else if (item.id !== 'btn-logout') {
             item.style.display = 'flex';
         }
 
-        // Marcar Active
         item.classList.remove('active');
         const targetPage = (page === 'pesquisa') ? 'home' : page;
         if (itemPage === targetPage) item.classList.add('active');
@@ -74,21 +66,19 @@ const sidebar = document.getElementById('sidebar');
 const menuToggle = document.getElementById('menu-toggle');
 
 /**
- * Roteador Principal com Lógica Admin vs Cliente
+ * Roteador Principal
  */
 export async function navigate(page, params = null) {
     const user = loadUser();
     const isAdmin = user && user.role === 'admin';
 
-    // --- SEGURANÇA ADMIN ---
-    // Admin não entra no Carrinho, Checkout ou Meus Filmes
+    // Segurança: Admin não entra em páginas de compra
     const forbiddenForAdmin = ['carrinho', 'checkout', 'meus-filmes', 'historico'];
     if (isAdmin && forbiddenForAdmin.includes(page)) {
-        console.warn("Acesso negado: Administradores não realizam compras.");
         return navigate('home'); 
     }
 
-    // --- SEGURANÇA CLIENTE ---
+    // Segurança: Cliente precisa logar para páginas privadas
     const privatePages = ['checkout', 'perfil', 'meus-filmes', 'historico'];
     if (!user && privatePages.includes(page)) {
         sessionStorage.setItem('redirect_after_login', page);
@@ -99,7 +89,7 @@ export async function navigate(page, params = null) {
     updateSidebarUI(page, user);
     
     const categoriesBar = document.querySelector('.categories-bar');
-    const hideCategories = ['perfil', 'checkout', 'historico', 'detalhes', 'login', 'admin-dashboard'].includes(page);
+    const hideCategories = ['perfil', 'checkout', 'historico', 'detalhes', 'login'].includes(page);
     if (categoriesBar) {
         categoriesBar.style.display = hideCategories ? 'none' : 'flex';
     }
@@ -113,7 +103,7 @@ export async function navigate(page, params = null) {
             case 'login':
                 pageElement = renderLogin(() => {
                     const freshUser = loadUser();
-                    const destination = isAdmin ? 'home' : (sessionStorage.getItem('redirect_after_login') || 'home');
+                    const destination = freshUser?.role === 'admin' ? 'home' : (sessionStorage.getItem('redirect_after_login') || 'home');
                     sessionStorage.removeItem('redirect_after_login');
                     navigate(destination);
                 });
@@ -134,8 +124,7 @@ export async function navigate(page, params = null) {
                 pageElement = renderCheckout();
                 break;
             case 'meus-filmes':
-                const myFilter = typeof params === 'string' ? { query: params } : params;
-                pageElement = renderMyMovies(myFilter || {});
+                pageElement = renderMyMovies(params || {});
                 break;
             case 'historico':
                 pageElement = renderHistory(params); 
@@ -143,9 +132,6 @@ export async function navigate(page, params = null) {
             case 'perfil':
                 pageElement = renderProfile();
                 break;
-            // case 'admin-dashboard':
-            //     pageElement = renderAdminDashboard();
-            //     break;
             default:
                 mainContent.innerHTML = `<h1>404</h1><p>Página não encontrada.</p>`;
                 return;
@@ -154,6 +140,7 @@ export async function navigate(page, params = null) {
         if (pageElement) {
             mainContent.innerHTML = '';
             mainContent.appendChild(pageElement);
+            // Configura os cliques logo após renderizar a Home ou Pesquisa
             if (page === 'home' || page === 'pesquisa') setupHomeListeners();
         }
     } catch (error) {
@@ -162,6 +149,28 @@ export async function navigate(page, params = null) {
     }
 
     window.scrollTo(0, 0);
+}
+
+/**
+ * Eventos para elementos da Home (Cards e Hero)
+ */
+function setupHomeListeners() {
+    // 1. Botão "Assistir Trailer" do HERO
+    const heroBtn = document.querySelector('.hero-btn-main');
+    if (heroBtn) {
+        heroBtn.addEventListener('click', () => {
+            const movieId = heroBtn.getAttribute('data-id');
+            navigate('detalhes', movieId);
+        });
+    }
+
+    // 2. Botão "Detalhes" dos cards da Grid
+    document.querySelectorAll('.btn-detail').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const movieId = e.currentTarget.getAttribute('data-id');
+            navigate('detalhes', movieId);
+        });
+    });
 }
 
 function showConfirmPopup(message, onConfirm) {
@@ -186,15 +195,6 @@ function showConfirmPopup(message, onConfirm) {
     modal.querySelector('.btn-cancel').onclick = () => modal.remove();
 }
 
-function setupHomeListeners() {
-    document.querySelectorAll('.btn-detail').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const movieId = e.currentTarget.getAttribute('data-id');
-            navigate('detalhes', movieId);
-        });
-    });
-}
-
 function setupUI() {
     const searchInput = document.getElementById('search-input');
     const logoutBtn = document.getElementById('btn-logout');
@@ -209,13 +209,6 @@ function setupUI() {
         });
     }
 
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        if (currentPage !== 'home' && currentPage !== 'pesquisa') {
-            navigate(currentPage, query);
-        }
-    });
-
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && searchInput.value.trim() !== '') {
             navigate('pesquisa', searchInput.value);
@@ -227,21 +220,16 @@ function setupUI() {
             document.querySelector('.btn-category.active')?.classList.remove('active');
             btn.classList.add('active');
             const genreId = btn.getAttribute('data-genre');
-            if (currentPage === 'meus-filmes') {
-                navigate('meus-filmes', { genreId: genreId });
-            } else {
-                navigate('home', genreId);
-            }
+            navigate(currentPage === 'meus-filmes' ? 'meus-filmes' : 'home', genreId);
         });
     });
 
-    menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    if (menuToggle) menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
 
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', () => {
             if (item.id === 'btn-logout') return;
-            const page = item.getAttribute('data-page');
-            navigate(page);
+            navigate(item.getAttribute('data-page'));
             if (window.innerWidth <= 768) sidebar.classList.remove('open');
         });
     });
