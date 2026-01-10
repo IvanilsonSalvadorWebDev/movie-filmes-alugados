@@ -155,21 +155,12 @@ export async function navigate(page, params = null) {
  * Eventos para elementos da Home (Cards e Hero)
  */
 function setupHomeListeners() {
-    // 1. Evento para o Botão do HERO
-    const heroBtn = document.querySelector('.hero-btn-main');
-    if (heroBtn) {
-        heroBtn.addEventListener('click', () => {
-            const movieId = heroBtn.getAttribute('data-id');
-            navigate('detalhes', movieId);
-        });
-    }
-
-    // 2. Evento para os Botões de Detalhes dos Cards
+    // Mantemos apenas os eventos da GRID de filmes aqui
     document.querySelectorAll('.btn-detail').forEach(button => {
-        button.addEventListener('click', (e) => {
+        button.onclick = (e) => {
             const movieId = e.currentTarget.getAttribute('data-id');
             navigate('detalhes', movieId);
-        });
+        };
     });
 }
 
