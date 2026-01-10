@@ -160,14 +160,16 @@ function setupHomeListeners() {
     // 1. Ouvinte para o botão do HERO
     const heroBtn = document.querySelector('.hero-btn-main');
     if (heroBtn) {
+        // Usamos onclick para garantir que não existam múltiplos eventos pendurados
         heroBtn.onclick = (e) => {
             e.preventDefault();
             const movieId = heroBtn.getAttribute('data-id');
+            console.log("Hero clicado! ID:", movieId);
             if (movieId) navigate('detalhes', movieId);
         };
     }
 
-    // 2. Ouvintes para os botões de detalhes dos Cards na Grid
+    // 2. Ouvintes para os botões dos Cards na Grid
     document.querySelectorAll('.btn-detail').forEach(button => {
         button.onclick = (e) => {
             e.preventDefault();

@@ -22,21 +22,13 @@ export function createHero(movie) {
             </p>
             
             <div class="hero-actions">
-                <button class="hero-btn-main">
+                <button class="hero-btn-main" data-id="${movie.id}">
                     <i class="fas fa-info-circle"></i> Ver Detalhes
                 </button>
             </div>
         </div>
     `;
 
-    // ADICIONE O EVENTO DIRETAMENTE AQUI
-    const btn = hero.querySelector('.hero-btn-main');
-    btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log("Redirecionando para o filme:", movie.id);
-        navigate('detalhes', movie.id);
-    });
-
     return hero;
+
 }
