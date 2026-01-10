@@ -1,4 +1,4 @@
-import { IMG_URL } from '../utils/api.js';
+import { navigate } from '../main.js'; // Importe o navigate para usar aqui dentro
 
 export function createHero(movie) {
     if (!movie) return document.createElement('div');
@@ -22,12 +22,21 @@ export function createHero(movie) {
             </p>
             
             <div class="hero-actions">
-                <button class="hero-btn-main" data-id="${movie.id}">
+                <button class="hero-btn-main">
                     <i class="fas fa-info-circle"></i> Ver Detalhes
                 </button>
             </div>
         </div>
     `;
+
+    // ADICIONE O EVENTO DIRETAMENTE AQUI
+    const btn = hero.querySelector('.hero-btn-main');
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Redirecionando para o filme:", movie.id);
+        navigate('detalhes', movie.id);
+    });
 
     return hero;
 }
