@@ -140,8 +140,10 @@ export async function navigate(page, params = null) {
         if (pageElement) {
             mainContent.innerHTML = '';
             mainContent.appendChild(pageElement);
-            // Configura os cliques logo após renderizar a Home ou Pesquisa
-            if (page === 'home' || page === 'pesquisa') setupHomeListeners();
+            // Configura os ouvintes de clique após o conteúdo estar no DOM
+            if (page === 'home' || page === 'pesquisa') {
+                setupHomeListeners();
+            }
         }
     } catch (error) {
         console.error("Erro na navegação:", error);
@@ -155,15 +157,25 @@ export async function navigate(page, params = null) {
  * Eventos para elementos da Home (Cards e Hero)
  */
 function setupHomeListeners() {
-    // Mantemos apenas os eventos da GRID de filmes aqui
+    // 1. Ouvinte para o botão do HERO
+    const heroBtn = document.querySelector('.hero-btn-main');
+    if (heroBtn) {
+        heroBtn.onclick = (e) => {
+            e.preventDefault();
+            const movieId = heroBtn.getAttribute('data-id');
+            if (movieId) navigate('detalhes', movieId);
+        };
+    }
+
+    // 2. Ouvintes para os botões de detalhes dos Cards na Grid
     document.querySelectorAll('.btn-detail').forEach(button => {
         button.onclick = (e) => {
+            e.preventDefault();
             const movieId = e.currentTarget.getAttribute('data-id');
-            navigate('detalhes', movieId);
+            if (movieId) navigate('detalhes', movieId);
         };
     });
 }
-
 
 function showConfirmPopup(message, onConfirm) {
     const modal = document.createElement('div');
@@ -201,11 +213,13 @@ function setupUI() {
         });
     }
 
-    searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && searchInput.value.trim() !== '') {
-            navigate('pesquisa', searchInput.value);
-        }
-    });
+    if (searchInput) {
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && searchInput.value.trim() !== '') {
+                navigate('pesquisa', searchInput.value);
+            }
+        });
+    }
 
     document.querySelectorAll('.btn-category').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -216,13 +230,15 @@ function setupUI() {
         });
     });
 
-    if (menuToggle) menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    }
 
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', () => {
             if (item.id === 'btn-logout') return;
             navigate(item.getAttribute('data-page'));
-            if (window.innerWidth <= 768) sidebar.classList.remove('open');
+            if (window.innerWidth <= 768 && sidebar) sidebar.classList.remove('open');
         });
     });
 }
