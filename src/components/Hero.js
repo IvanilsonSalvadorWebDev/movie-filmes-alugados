@@ -6,7 +6,6 @@ export function createHero(movie) {
     const hero = document.createElement('section');
     hero.className = 'hero-section';
 
-    // Imagem horizontal (backdrop)
     const backdrop = movie.backdrop_path 
         ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}` 
         : 'https://via.placeholder.com/1920x1080?text=Sem+Imagem';
@@ -23,15 +22,12 @@ export function createHero(movie) {
             </p>
             
             <div class="hero-actions">
-                <button class="btn-primary hero-btn-main" data-id="${movie.id}">
+                <button class="hero-btn-main" data-id="${movie.id}">
                     <i class="fas fa-info-circle"></i> Ver Detalhes
                 </button>
             </div>
         </div>
     `;
-
-    // O listener de clique será gerenciado pelo Roteador (navigate) 
-    // através da função setupHomeListeners que configuramos anteriormente.
 
     return hero;
 }

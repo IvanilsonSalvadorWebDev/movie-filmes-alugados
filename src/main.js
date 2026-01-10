@@ -155,20 +155,16 @@ export async function navigate(page, params = null) {
  * Eventos para elementos da Home (Cards e Hero)
  */
 function setupHomeListeners() {
-    // 1. Botão "Assistir Trailer" do HERO
-  // Exemplo do que deve estar no seu main.js
-function setupHomeListeners() {
+    // 1. Evento para o Botão do HERO
     const heroBtn = document.querySelector('.hero-btn-main');
     if (heroBtn) {
         heroBtn.addEventListener('click', () => {
             const movieId = heroBtn.getAttribute('data-id');
-            navigate('detalhes', movieId); // Redireciona para a página de detalhes
+            navigate('detalhes', movieId);
         });
     }
 
-    }
-
-    // 2. Botão "Detalhes" dos cards da Grid
+    // 2. Evento para os Botões de Detalhes dos Cards
     document.querySelectorAll('.btn-detail').forEach(button => {
         button.addEventListener('click', (e) => {
             const movieId = e.currentTarget.getAttribute('data-id');
@@ -176,6 +172,7 @@ function setupHomeListeners() {
         });
     });
 }
+
 
 function showConfirmPopup(message, onConfirm) {
     const modal = document.createElement('div');
