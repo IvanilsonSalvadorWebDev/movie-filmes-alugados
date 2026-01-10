@@ -89,13 +89,40 @@ export function renderCheckout() {
     });
 
     // Submissão do formulário
-    container.querySelector('#pay-form').onsubmit = (e) => {
-        e.preventDefault();
-        showToast('Pagamento processado com sucesso!');
-        localStorage.removeItem('rockmovies_cart');
-        updateCartCount();
-        navigate('meus-filmes');
-    };
+    // Submissão do formulário
+container.querySelector('#pay-form').onsubmit = (e) => {
+    e.preventDefault();
+
+    // 1. Pegar os itens que estão no carrinho agora
+    const cartItems = getCart();
+
+    if (cartItems.length > 0) {
+        // 2. Carregar a biblioteca atual ou criar uma nova
+        const library = JSON.parse(localStorage.getItem('rockmovies_rentals') || '[]');
+
+        // 3. Preparar os filmes para a biblioteca
+        const newPurchases = cartItems.map(item => ({
+            id: item.id,
+            title: item.title,
+            poster: item.poster_path || item.poster,
+            genre_ids: item.genre_ids || [],
+            type: item.type || 'buy', // Se não houver tipo, assume compra
+            purchaseDate: Date.now(),
+            // Se for aluguel (rent), adiciona 48h de expiração
+            expiryDate: item.type === 'rent' ? Date.now() + (48 * 60 * 60 * 1000) : null
+        }));
+
+        // 4. Unir os novos filmes aos antigos e salvar
+        const updatedLibrary = [...library, ...newPurchases];
+        localStorage.setItem('rockmovies_rentals', JSON.stringify(updatedLibrary));
+    }
+
+    // 5. Finalizar o processo
+    showToast('Pagamento processado com sucesso!');
+    localStorage.removeItem('rockmovies_cart'); // Limpa o carrinho
+    updateCartCount();
+    navigate('meus-filmes'); // Agora os filmes aparecerão aqui!
+};
 
     return container;
 }
