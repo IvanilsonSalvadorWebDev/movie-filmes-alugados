@@ -156,12 +156,16 @@ export async function navigate(page, params = null) {
  */
 function setupHomeListeners() {
     // 1. Botão "Assistir Trailer" do HERO
+  // Exemplo do que deve estar no seu main.js
+function setupHomeListeners() {
     const heroBtn = document.querySelector('.hero-btn-main');
     if (heroBtn) {
         heroBtn.addEventListener('click', () => {
             const movieId = heroBtn.getAttribute('data-id');
-            navigate('detalhes', movieId);
+            navigate('detalhes', movieId); // Redireciona para a página de detalhes
         });
+    }
+
     }
 
     // 2. Botão "Detalhes" dos cards da Grid
