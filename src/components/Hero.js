@@ -31,11 +31,6 @@ export function createHero(movie) {
                     <button class="btn-outline hero-btn-cart">
                         <i class="fas fa-shopping-cart"></i> Adicionar
                     </button>
-                    
-                    <div class="hero-dropdown">
-                        <button class="hero-opt-rent">Alugar <span>9,90€</span></button>
-                        <button class="hero-opt-buy">Comprar <span>19,90€</span></button>
-                    </div>
                 </div>
             </div>
         </div>
