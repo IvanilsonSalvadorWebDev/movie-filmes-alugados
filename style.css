@@ -763,18 +763,19 @@ main:has(.checkout-page-wrapper) {
  .top-bar, .categories-bar { padding: 15px 20px; }
  .search-box { max-width: 250px; }
 }
+
 /* ==========================================================================
-   HERO COMPONENT - COMPACT VERSION
+   HERO COMPONENT - SLIM VERSION (280px)
    ========================================================================== */
 .hero-section {
     position: relative;
-    height: 420px; /* Reduzido de 550px */
+    height: 280px; /* Altura ideal entre 250px e 300px */
     margin: 0 40px 30px 40px; 
-    border-radius: calc(var(--radius) * 2);
+    border-radius: var(--radius);
     overflow: hidden;
     display: flex;
     align-items: center;
-    background-color: var(--text-rock);
+    background-color: #1a1a1a;
     box-shadow: var(--shadow);
 }
 
@@ -785,13 +786,8 @@ main:has(.checkout-page-wrapper) {
     width: 100%;
     height: 100%;
     background-size: cover;
-    background-position: center 20%;
+    background-position: center 15%; /* Foca mais no topo da imagem */
     z-index: 1;
-    transition: transform 0.8s ease;
-}
-
-.hero-section:hover .hero-background {
-    transform: scale(1.03);
 }
 
 .hero-overlay {
@@ -800,89 +796,84 @@ main:has(.checkout-page-wrapper) {
     left: 0;
     width: 100%;
     height: 100%;
-    /* Gradiente mais denso para manter legibilidade em altura menor */
+    /* Gradiente mais linear para garantir leitura em altura curta */
     background: linear-gradient(90deg, 
-        rgba(26, 26, 26, 0.9) 0%, 
-        rgba(26, 26, 26, 0.5) 60%, 
-        transparent 100%);
+        rgba(0, 0, 0, 0.85) 0%, 
+        rgba(0, 0, 0, 0.4) 100%);
     z-index: 2;
 }
 
 .hero-content {
     position: relative;
     z-index: 3;
-    padding: 0 50px;
-    max-width: 600px;
+    padding: 0 40px;
+    max-width: 550px;
     color: white;
 }
 
 .hero-badge {
     background-color: var(--primary-orange);
     color: white;
-    padding: 4px 12px; /* Mais fino */
-    border-radius: 30px;
-    font-size: 0.7rem;
-    font-weight: var(--fw-black);
+    padding: 2px 10px;
+    border-radius: 4px; /* Mais quadrado combina com o estilo slim */
+    font-size: 0.65rem;
+    font-weight: 800;
     text-transform: uppercase;
-    display: inline-block;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .hero-title {
     font-family: 'Gilroy', sans-serif;
-    font-size: 2.8rem; /* Reduzido de 3.5rem */
-    font-weight: var(--fw-black);
-    line-height: 1.1;
-    margin-bottom: 15px;
-    letter-spacing: -1px;
+    font-size: 2rem; /* Tamanho reduzido para não ocupar a altura toda */
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
 }
 
 .hero-description {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 25px; /* Reduzido */
-    line-height: 1.5;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 20px;
+    line-height: 1.4;
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* Mostra apenas 2 linhas agora */
+    -webkit-line-clamp: 2; /* Essencial manter 2 linhas */
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
 .hero-actions {
     display: flex;
-    gap: 12px;
-    align-items: center;
+    gap: 10px;
 }
 
 .hero-btn-main {
-    padding: 12px 28px; /* Mais compacto */
-    font-size: 0.95rem;
-    border-radius: 30px;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    border-radius: 6px;
     background-color: var(--primary-orange);
     color: white;
     border: none;
     cursor: pointer;
-    font-weight: var(--fw-bold);
-    transition: var(--transition);
+    font-weight: bold;
 }
 
 .hero-btn-cart {
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
-    padding: 12px 22px;
-    border-radius: 30px;
+    padding: 10px 15px;
+    font-size: 0.85rem;
+    border-radius: 6px;
     cursor: pointer;
-    font-weight: var(--fw-bold);
 }
 
-/* Ajuste para telas menores */
+/* Responsividade para o modo Slim */
 @media (max-width: 768px) {
     .hero-section { 
-        height: 350px; 
+        height: 250px; 
         margin: 0 15px 20px 15px; 
     }
-    .hero-title { font-size: 2rem; }
-    .hero-content { padding: 0 25px; }
+    .hero-title { font-size: 1.6rem; }
+    .hero-description { font-size: 0.85rem; }
 }
